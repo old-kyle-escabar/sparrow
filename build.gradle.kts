@@ -43,6 +43,7 @@ dependencies {
     /**
      * Module inclusions
      */
+    implementation(project(":asm"))
     implementation(project(":deobfuscator"))
 }
 
