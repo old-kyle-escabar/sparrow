@@ -29,9 +29,13 @@ class Class(val group: ClassGroup, val node: ClassNode) {
 
     val access get() = node.access
 
-    val methods = node.methods.map { Method(group, this, it) }
+    val methods = node.methods
+        .filter { it.name.length <= 2 }
+        .map { Method(group, this, it) }
 
-    val fields = node.fields.map { Field(group, this, it) }
+    val fields = node.fields
+        .filter { it.name.length <= 2 }
+        .map { Field(group, this, it) }
 
     override fun toString(): String = node.name
 }
