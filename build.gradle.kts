@@ -37,6 +37,16 @@ allprojects {
 
 apply(plugin = "application")
 
+dependencies {
+    implementation(Library.clikt)
+
+    /**
+     * Module inclusions
+     */
+    implementation(project(":asm"))
+    implementation(project(":deobfuscator"))
+}
+
 tasks.withType<JavaExec> {
     workingDir = rootProject.projectDir
     main = "io.rsbox.sparrow.Sparrow"
