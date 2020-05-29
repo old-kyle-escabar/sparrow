@@ -1,8 +1,9 @@
 package io.rsbox.sparrow.deobfuscator
 
+import io.rsbox.sparrow.asm.ClassGroup
 import org.tinylog.kotlin.Logger
 import java.io.File
-import java.util.concurrent.atomic.AtomicReference
+import kotlin.system.exitProcess
 
 /**
  * Copyright (c) 2020 RSBox
@@ -25,7 +26,7 @@ class Deobfuscator(private val source: File, private val output: File) {
     /**
      * The current loaded class group. Loaded from [source] JAR file.
      */
-    private lateinit var group: Any
+    private lateinit var group: ClassGroup
 
     /**
      * Loads the [source] JAR file into the loaded class group.
@@ -33,9 +34,16 @@ class Deobfuscator(private val source: File, private val output: File) {
      * @return Boolean
      */
     fun loadSource(): Boolean {
-        Logger.info("Loading source JAR file into class group.")
+        return try {
+            group = ClassGroup.fromJar(source)
 
-        return true
+            Logger.info("Loaded source JAR into class group. Found '${group.size} classes'.")
+
+            true
+        } catch(e : Exception) {
+            Logger.error("An error occurred when loading the source JAR file.", e)
+            false
+        }
     }
 
     /**

@@ -1,1 +1,5 @@
 description = "ASM"
+
+dependencies {
+    asm()
+}
