@@ -3,7 +3,6 @@ package io.rsbox.sparrow.asm
 import io.rsbox.sparrow.asm.util.JarUtil
 import org.objectweb.asm.tree.ClassNode
 import java.io.File
-import java.util.jar.JarFile
 
 /**
  * Copyright (c) 2020 RSBox
@@ -25,12 +24,20 @@ class ClassGroup(nodes: Collection<ClassNode>) {
     /**
      * The classes in the group.
      */
-    val classes = nodes.toMutableList()
+    val classes = nodes.map { Class(this, it) }.toMutableList()
 
     /**
      * The number of classes in the group.
      */
     val size: Int get() = classes.size
+
+    /**
+     * Gets a [Class] with a given name.
+     *
+     * @param name String
+     * @return Class?
+     */
+    operator fun get(name: String): Class? = classes.firstOrNull { it.name == name }
 
     companion object {
         /**
