@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version Project.kotlinVersion
+    application
 }
 
 tasks.withType<Wrapper> {
@@ -32,4 +33,11 @@ allprojects {
             kotlinOptions.jvmTarget = Project.jvmVersion.toString()
         }
     }
+}
+
+apply(plugin = "application")
+
+tasks.withType<JavaExec> {
+    workingDir = rootProject.projectDir
+    main = "io.rsbox.sparrow.Sparrow"
 }
