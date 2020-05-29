@@ -1,12 +1,8 @@
 package io.rsbox.sparrow.deobfuscator
 
 import io.rsbox.sparrow.asm.ClassGroup
-import io.rsbox.sparrow.deobfuscator.transformer.DeadCodeRemover
-import io.rsbox.sparrow.deobfuscator.transformer.PredicateCheckRemover
-import io.rsbox.sparrow.deobfuscator.transformer.TryCatchRemover
 import org.tinylog.kotlin.Logger
 import java.io.File
-import kotlin.system.exitProcess
 
 /**
  * Copyright (c) 2020 RSBox
@@ -42,12 +38,6 @@ class Deobfuscator() {
     lateinit var group: ClassGroup
         private set
 
-    private val transformers = arrayOf(
-        PredicateCheckRemover(),
-        TryCatchRemover(),
-        DeadCodeRemover()
-    )
-
     /**
      * Loads the [source] JAR file into the loaded class group.
      *
@@ -76,11 +66,6 @@ class Deobfuscator() {
         if(!this::group.isInitialized) error("Source JAR file must be loaded.")
 
         Logger.info("Running deobfuscator.")
-
-        transformers.forEach {
-            Logger.info("Running transformer '${it::class.java.simpleName}'.")
-            it.transform(group)
-        }
 
         Logger.info("Completed deobfuscator transformations.")
     }
