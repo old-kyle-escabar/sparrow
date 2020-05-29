@@ -1,5 +1,8 @@
 package io.rsbox.sparrow
 
+import com.github.ajalt.clikt.core.subcommands
+import io.rsbox.sparrow.command.DeobfuscatorCommand
+import io.rsbox.sparrow.command.SparrowCommand
 import org.tinylog.kotlin.Logger
 
 /**
@@ -19,8 +22,17 @@ class Sparrow {
          */
         @JvmStatic
         fun main(args: Array<String>) {
-            Logger.info("Initializing...")
+            /**
+             * Invoke Sparrow command line.
+             */
 
+            val subcommands = listOf(
+                DeobfuscatorCommand()
+            )
+
+            SparrowCommand()
+                .subcommands(subcommands)
+                .main(args)
         }
     }
 }

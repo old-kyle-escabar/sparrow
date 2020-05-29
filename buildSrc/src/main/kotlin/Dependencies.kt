@@ -15,10 +15,12 @@ object Plugin {
 object Library {
     private object Version {
         const val tinylog = "2.1.2"
+        const val clikt = "2.7.1"
     }
 
     const val tinylogApi = "org.tinylog:tinylog-api-kotlin:${Version.tinylog}"
     const val tinylogImpl = "org.tinylog:tinylog-impl:${Version.tinylog}"
+    const val clikt = "com.github.ajalt:clikt:${Version.clikt}"
 }
 
 fun DependencyHandlerScope.tinylog() {

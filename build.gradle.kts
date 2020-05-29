@@ -37,6 +37,10 @@ allprojects {
 
 apply(plugin = "application")
 
+dependencies {
+    implementation(Library.clikt)
+}
+
 tasks.withType<JavaExec> {
     workingDir = rootProject.projectDir
     main = "io.rsbox.sparrow.Sparrow"
