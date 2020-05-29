@@ -39,6 +39,11 @@ apply(plugin = "application")
 
 dependencies {
     implementation(Library.clikt)
+
+    /**
+     * Module inclusions
+     */
+    implementation(project(":deobfuscator"))
 }
 
 tasks.withType<JavaExec> {
