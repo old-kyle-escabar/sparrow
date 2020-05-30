@@ -1,6 +1,6 @@
-package io.rsbox.sparrow.deobfuscator
+package io.rsbox.sparrow.deobfuscator.transform
 
-import io.rsbox.sparrow.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
 
 /**
  * Copyright (c) 2020 RSBox
@@ -11,24 +11,18 @@ import io.rsbox.sparrow.asm.ClassGroup
  * @author Kyle Escobar
  */
 
-/**
- * Represents a bytecode transformer
- */
 interface Transformer {
 
     /**
-     * The number priority of the transformer.
-     * lowest -> highest
-     * lowest runs first.
-     * highest runs last.
+     * The order in which the transformers are loaded.
+     * Lowest = first to run.
      */
     val priority: Int
 
     /**
-     * Execute the transformer logic.
+     * Runs the transformer logic.
      *
      * @param group ClassGroup
      */
     fun transform(group: ClassGroup)
-
 }

@@ -46,18 +46,9 @@ class DeobfuscatorCommand : CliktCommand(
         config["sourceJar"] = sourceJar
         config["outputJar"] = outputJar
 
-        val deobfuscator = Deobfuscator(sourceJar, outputJar)
-
-        deobfuscator.loadSource()
-
-        /**
-         * Run the deobfuscator.
-         */
+        val deobfuscator = Deobfuscator()
+        deobfuscator.loadJar(sourceJar)
         deobfuscator.deobfuscate()
-
-        /**
-         * Export the JAR
-         */
-        deobfuscator.exportGroup()
+        deobfuscator.exportJar(outputJar)
     }
 }
