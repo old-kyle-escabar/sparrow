@@ -1,5 +1,6 @@
 package io.rsbox.sparrow.deobfuscator
 
+import io.github.classgraph.ClassGraph
 import io.rsbox.sparrow.asm.ClassGroup
 import org.tinylog.kotlin.Logger
 import java.io.File
@@ -52,8 +53,16 @@ class Deobfuscator() {
             true
         } catch(e : Exception) {
             Logger.error("An error occurred when loading the source JAR file.", e)
-            false
+            throw Exception(e)
         }
+    }
+
+    /**
+     * Exports the [group] to the [output] jar file.
+     */
+    fun exportGroup() {
+        Logger.info("Preparing to export to JAR file.")
+        group.toJar(output)
     }
 
     /**
@@ -67,6 +76,27 @@ class Deobfuscator() {
 
         Logger.info("Running deobfuscator.")
 
+        val transformers = this.findTransformers().toMutableList()
+        Logger.info("Found ${transformers.size} bytecode transformers.")
+
+        transformers.sortBy { it.priority }
+
+        transformers.forEach {
+            Logger.info("Running transformer '${it::class.java.simpleName}'.")
+            it.transform(group)
+        }
+
         Logger.info("Completed deobfuscator transformations.")
+    }
+
+    private fun findTransformers(): List<Transformer> {
+        Logger.info("Scanning for bytecode transformers.")
+
+        val scan = ClassGraph().enableAllInfo()
+            .whitelistPackages("io.rsbox.sparrow.deobfuscator")
+            .scan()
+
+        val resultList = scan.getClassesImplementing("io.rsbox.sparrow.deobfuscator.Transformer")
+        return resultList.loadClasses().map { it.getDeclaredConstructor().newInstance() as Transformer }
     }
 }

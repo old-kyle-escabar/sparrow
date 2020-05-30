@@ -17,6 +17,14 @@ import io.rsbox.sparrow.asm.ClassGroup
 interface Transformer {
 
     /**
+     * The number priority of the transformer.
+     * lowest -> highest
+     * lowest runs first.
+     * highest runs last.
+     */
+    val priority: Int
+
+    /**
      * Execute the transformer logic.
      *
      * @param group ClassGroup

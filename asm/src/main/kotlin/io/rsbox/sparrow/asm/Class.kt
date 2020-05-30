@@ -1,6 +1,5 @@
 package io.rsbox.sparrow.asm
 
-import org.objectweb.asm.Type
 import org.objectweb.asm.tree.ClassNode
 
 /**
@@ -12,30 +11,7 @@ import org.objectweb.asm.tree.ClassNode
  * @author Kyle Escobar
  */
 
-/**
- * Represents a java class.
- *
- * @property group ClassGroup
- * @property node ClassNode
- * @constructor
- */
-class Class(val group: ClassGroup, val node: ClassNode) {
+class Class(val group: ClassGroup, val asm: ClassNode) {
 
-    val name get() = node.name
-
-    val superName get() = node.superName
-
-    val type get() = Type.getObjectType(name)
-
-    val access get() = node.access
-
-    val methods = node.methods
-        .filter { it.name.length <= 2 }
-        .map { Method(group, this, it) }
-
-    val fields = node.fields
-        .filter { it.name.length <= 2 }
-        .map { Field(group, this, it) }
-
-    override fun toString(): String = node.name
+    override fun toString(): String = asm.name
 }
