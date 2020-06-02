@@ -1,12 +1,9 @@
 package io.rsbox.sparrow.deobfuscator
 
-import io.rsbox.sparrow.asm.ClassGroup
-import io.rsbox.sparrow.deobfuscator.transformer.DeadCodeRemover
-import io.rsbox.sparrow.deobfuscator.transformer.PredicateCheckRemover
-import io.rsbox.sparrow.deobfuscator.transformer.TryCatchRemover
+import io.github.classgraph.ClassGraph
+import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
 import org.tinylog.kotlin.Logger
 import java.io.File
-import kotlin.system.exitProcess
 
 /**
  * Copyright (c) 2020 RSBox
@@ -18,70 +15,65 @@ import kotlin.system.exitProcess
  */
 
 /**
- * Represents a OSRS gamepack Deobfuscator.
- *
- * @constructor
+ * Represents a bytecode deobfuscator designed to make raw
+ * OSRS gamepacks more readable.
  */
-class Deobfuscator() {
-
-    private lateinit var source: File
-    private lateinit var output: File
-
-    constructor(source: File) : this() {
-        this.source = source
-    }
-
-    constructor(source: File, output: File) : this() {
-        this.source = source
-        this.output = output
-    }
+class Deobfuscator {
 
     /**
-     * The current loaded class group. Loaded from [source] JAR file.
+     * Represents the current loaded class group.
      */
-    lateinit var group: ClassGroup
-        private set
-
-    private val transformers = arrayOf(
-        PredicateCheckRemover(),
-        TryCatchRemover(),
-        DeadCodeRemover()
-    )
+    val group = ClassGroup()
 
     /**
-     * Loads the [source] JAR file into the loaded class group.
+     * The bytecode transformers to run on the [group]
+     */
+    private val transformers = this.scanTransformers()
+
+    /**
+     * Loads a JAR file into the [ClassGroup].
      *
-     * @return Boolean
+     * @param file File
      */
-    fun loadSource(): Boolean {
-        return try {
-            group = ClassGroup.fromJar(source)
-
-            Logger.info("Loaded source JAR into class group. Found '${group.size} classes'.")
-
-            true
-        } catch(e : Exception) {
-            Logger.error("An error occurred when loading the source JAR file.", e)
-            false
-        }
+    fun loadJar(file: File) {
+        Logger.info("Loading classes from JAR file: '${file.name}'.")
+        group.addJar(file)
     }
 
     /**
-     * Executes the deobfuscator.
+     * Exports the loaded [group] to a JAR file.
+     *
+     * @param file File
+     */
+    fun exportJar(file: File) {
+        Logger.info("Exporting classes to JAR file: '${file.name}'.")
+        group.toJar(file)
+    }
+
+    /**
+     * Runs the deobfuscator.
      */
     fun deobfuscate() {
-        /**
-         * Ensure the source JAR has been loaded into the class group.
-         */
-        if(!this::group.isInitialized) error("Source JAR file must be loaded.")
-
-        Logger.info("Running deobfuscator.")
+        Logger.info("Preparing deobfuscator.")
 
         transformers.forEach {
-            Logger.info("Running transformer '${it::class.java.simpleName}'.")
+            Logger.info("Running transformer: '${it::class.java.simpleName}'.")
             it.transform(group)
         }
 
-        Logger.info("Completed deobfuscator transformations.")
+        Logger.info("Completed deobfuscation.")
+    }
+
+    private fun scanTransformers(): List<Transformer> {
+        val scanner = ClassGraph()
+            .enableAllInfo()
+            .whitelistPackages("io.rsbox.sparrow.deobfuscator.transform")
+            .scan()
+
+        return scanner.getClassesImplementing("io.rsbox.sparrow.deobfuscator.Transformer")
+            .loadClasses()
+            .map { it.getDeclaredConstructor().newInstance() as Transformer }
+            .sortedBy { it.priority }
+            .toList()
     }
 }

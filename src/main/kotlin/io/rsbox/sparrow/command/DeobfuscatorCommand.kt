@@ -6,8 +6,6 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
 import io.rsbox.sparrow.deobfuscator.Deobfuscator
-import org.tinylog.kotlin.Logger
-import java.io.File
 
 /**
  * Copyright (c) 2020 RSBox
@@ -48,14 +46,9 @@ class DeobfuscatorCommand : CliktCommand(
         config["sourceJar"] = sourceJar
         config["outputJar"] = outputJar
 
-        val deobfuscator = Deobfuscator(sourceJar, outputJar)
-
-        deobfuscator.loadSource()
-
-        /**
-         * Run the deobfuscator.
-         */
+        val deobfuscator = Deobfuscator()
+        deobfuscator.loadJar(sourceJar)
         deobfuscator.deobfuscate()
-
+        deobfuscator.exportJar(outputJar)
     }
 }
