@@ -1,5 +1,6 @@
 package io.rsbox.sparrow.deobfuscator.transform
 
+import io.rsbox.sparrow.deobfuscator.Transformer
 import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
 import org.objectweb.asm.Opcodes.*
 import org.objectweb.asm.Type
@@ -23,9 +24,9 @@ import java.lang.reflect.Modifier
  *
  * This transformer removes the check and the exception code.
  */
-class GarbageParamCheckRemover : Transformer {
+class OpaquePredicateCheckRemover : Transformer {
 
-    override val priority = 1
+    override val priority = 4
 
     override fun transform(group: ClassGroup) {
         var counter = 0

@@ -2,7 +2,6 @@ package io.rsbox.sparrow.deobfuscator
 
 import io.github.classgraph.ClassGraph
 import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
-import io.rsbox.sparrow.deobfuscator.transform.Transformer
 import org.tinylog.kotlin.Logger
 import java.io.File
 
@@ -71,7 +70,7 @@ class Deobfuscator {
             .whitelistPackages("io.rsbox.sparrow.deobfuscator.transform")
             .scan()
 
-        return scanner.getClassesImplementing("io.rsbox.sparrow.deobfuscator.transform.Transformer")
+        return scanner.getClassesImplementing("io.rsbox.sparrow.deobfuscator.Transformer")
             .loadClasses()
             .map { it.getDeclaredConstructor().newInstance() as Transformer }
             .sortedBy { it.priority }

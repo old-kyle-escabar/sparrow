@@ -1,4 +1,4 @@
-package io.rsbox.sparrow.deobfuscator.transform
+package io.rsbox.sparrow.deobfuscator
 
 import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
 

@@ -1,5 +1,6 @@
 package io.rsbox.sparrow.deobfuscator.transform
 
+import io.rsbox.sparrow.deobfuscator.Transformer
 import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
 import org.objectweb.asm.Type
 import org.tinylog.kotlin.Logger
@@ -17,9 +18,9 @@ import java.lang.RuntimeException
 /**
  * Removes the [RuntimeException] try-catch blocks.
  */
-class RuntimeExceptionRemover : Transformer {
+class TryCatchBlockRemover : Transformer {
 
-    override val priority = 2
+    override val priority = 1
 
     override fun transform(group: ClassGroup) {
         var counter = 0
