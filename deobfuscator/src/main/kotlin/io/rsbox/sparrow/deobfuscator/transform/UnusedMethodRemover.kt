@@ -25,7 +25,7 @@ import java.util.*
  */
 class UnusedMethodRemover : Transformer {
 
-    override val priority = 5
+    override val priority = 1
 
     /**
      * Removes the unused methods.

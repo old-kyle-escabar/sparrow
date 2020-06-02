@@ -21,7 +21,7 @@ import org.tinylog.kotlin.Logger
  */
 class DeadCodeRemover : Transformer {
 
-    override val priority = 2
+    override val priority = 7
 
     override fun transform(group: ClassGroup) {
         var counter = 0

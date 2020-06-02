@@ -26,7 +26,7 @@ import java.lang.reflect.Modifier
  */
 class OpaquePredicateCheckRemover : Transformer {
 
-    override val priority = 4
+    override val priority = 8
 
     override fun transform(group: ClassGroup) {
         var counter = 0
