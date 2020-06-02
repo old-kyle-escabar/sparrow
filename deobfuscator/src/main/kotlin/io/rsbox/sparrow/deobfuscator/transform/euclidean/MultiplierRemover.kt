@@ -24,7 +24,7 @@ import org.tinylog.kotlin.Logger
  */
 class MultiplierRemover : Transformer {
 
-    override val priority = 5
+    override val priority = 10
 
     override fun transform(group: ClassGroup) {
         val multipliers = MultiplierFinder().getMultipliers(group)
