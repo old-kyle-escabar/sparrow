@@ -17,10 +17,7 @@ import kotlin.collections.AbstractMap
  * @author Kyle Escobar
  */
 
-@ExperimentalStdlibApi
 class ControlFlowFixer : Transformer {
-
-    override val priority = 3
 
     override fun transform(group: ClassGroup) {
         var counter = 0

@@ -1,7 +1,9 @@
 package io.rsbox.sparrow.deobfuscator
 
-import io.github.classgraph.ClassGraph
 import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.transform.*
+import io.rsbox.sparrow.deobfuscator.transform.controlflow.ControlFlowFixer
+import io.rsbox.sparrow.deobfuscator.transform.euclidean.MultiplierRemover
 import org.tinylog.kotlin.Logger
 import java.io.File
 
@@ -27,8 +29,23 @@ class Deobfuscator {
 
     /**
      * The bytecode transformers to run on the [group]
+     * NOTE* The order is VERY important. Some of the transformers are dependent on others
+     * to be executed prior.
+     *
+     * Future plans to add 'dependson' annotation in future version.
      */
-    private val transformers = this.scanTransformers()
+    private val transformers = listOf(
+        UnusedMethodRemover::class,
+        UnusedFieldRemover::class,
+        MultiplierRemover::class,
+        ControlFlowFixer::class,
+        TryCatchBlockRemover::class,
+        ErrorContructorRemover::class,
+        GotoRemover::class,
+        DeadCodeRemover::class,
+        OpaquePredicateCheckRemover::class,
+        OpaquePredicateArgRemover::class
+    )
 
     /**
      * Loads a JAR file into the [ClassGroup].
@@ -57,23 +74,12 @@ class Deobfuscator {
         Logger.info("Preparing deobfuscator.")
 
         transformers.forEach {
-            Logger.info("Running transformer: '${it::class.java.simpleName}'.")
-            it.transform(group)
+            Logger.info("Running transformer: '${it.java.simpleName}'.")
+
+            val transformer = it.java.getDeclaredConstructor().newInstance()
+            transformer.transform(group)
         }
 
         Logger.info("Completed deobfuscation.")
-    }
-
-    private fun scanTransformers(): List<Transformer> {
-        val scanner = ClassGraph()
-            .enableAllInfo()
-            .whitelistPackages("io.rsbox.sparrow.deobfuscator.transform")
-            .scan()
-
-        return scanner.getClassesImplementing("io.rsbox.sparrow.deobfuscator.Transformer")
-            .loadClasses()
-            .map { it.getDeclaredConstructor().newInstance() as Transformer }
-            .sortedBy { it.priority }
-            .toList()
     }
 }
