@@ -3,7 +3,6 @@ package io.rsbox.sparrow
 import com.github.ajalt.clikt.core.subcommands
 import io.rsbox.sparrow.command.DeobfuscatorCommand
 import io.rsbox.sparrow.command.SparrowCommand
-import org.tinylog.kotlin.Logger
 
 /**
  * Copyright (c) 2020 RSBox

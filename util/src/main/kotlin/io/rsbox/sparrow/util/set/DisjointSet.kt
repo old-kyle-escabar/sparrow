@@ -57,7 +57,7 @@ class DisjointSet<T> {
      * @param data T
      * @return Boolean
      */
-    fun exists(data: T): Boolean = map.containsKey(data)
+    fun contains(data: T): Boolean = map.containsKey(data)
 
     /**
      * The number of collections.
