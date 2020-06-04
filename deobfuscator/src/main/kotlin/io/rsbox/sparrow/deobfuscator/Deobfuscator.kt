@@ -45,10 +45,11 @@ class Deobfuscator {
         GotoRemover::class,
         DeadCodeRemover::class,
         OpaquePredicateCheckRemover::class,
-        OpaquePredicateArgRemover::class,
         FieldSorter::class,
         MethodSorter::class,
-        DuplicateMethodRemover::class
+        Renamer::class,
+        DuplicateMethodRemover::class,
+        OpaquePredicateArgRemover::class
     )
 
     /**
@@ -79,19 +80,12 @@ class Deobfuscator {
         Logger.info("Preparing deobfuscator.")
 
         transformers.forEach {
+            if(it == Renamer::class && !rename) return@forEach
+
             Logger.info("Running transformer: '${it.java.simpleName}'.")
 
             val transformer = it.java.getDeclaredConstructor().newInstance()
             transformer.transform(group)
-        }
-
-        if(rename) {
-            Logger.info("Renaming all nodes.")
-
-            val transformer = Renamer::class.java.getDeclaredConstructor().newInstance()
-            transformer.transform(group)
-
-            Logger.info("Completed renaming all nodes.")
         }
 
         Logger.info("Completed deobfuscation.")
