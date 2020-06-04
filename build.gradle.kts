@@ -39,10 +39,12 @@ apply(plugin = "application")
 
 dependencies {
     implementation(Library.clikt)
+    implementation(Library.jgrapht)
 
     /**
      * Module inclusions
      */
+    implementation(project(":util"))
     implementation(project(":deobfuscator"))
 }
 

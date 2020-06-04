@@ -20,12 +20,8 @@ import org.tinylog.kotlin.Logger
  * Removes contructors which handle the error exception throwing.
  * This is required because when removing all RuntimeExceptions,
  * some of the left over constructors are not handled.
- *
- * @property priority Int
  */
 class ErrorContructorRemover : Transformer {
-
-    override val priority = 6
 
     override fun transform(group: ClassGroup) {
         var counter = 0

@@ -12,13 +12,6 @@ import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
  */
 
 interface Transformer {
-
-    /**
-     * The order in which the transformers are loaded.
-     * Lowest = first to run.
-     */
-    val priority: Int
-
     /**
      * Runs the transformer logic.
      *

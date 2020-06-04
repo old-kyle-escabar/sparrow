@@ -3,7 +3,7 @@ package io.rsbox.sparrow
 import com.github.ajalt.clikt.core.subcommands
 import io.rsbox.sparrow.command.DeobfuscatorCommand
 import io.rsbox.sparrow.command.SparrowCommand
-import org.tinylog.kotlin.Logger
+import io.rsbox.sparrow.command.TestClientCommand
 
 /**
  * Copyright (c) 2020 RSBox
@@ -27,7 +27,8 @@ class Sparrow {
              */
 
             val subcommands = listOf(
-                DeobfuscatorCommand()
+                DeobfuscatorCommand(),
+                TestClientCommand()
             )
 
             SparrowCommand()

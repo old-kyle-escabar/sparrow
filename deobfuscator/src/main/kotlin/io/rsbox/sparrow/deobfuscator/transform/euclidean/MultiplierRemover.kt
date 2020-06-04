@@ -24,13 +24,11 @@ import org.tinylog.kotlin.Logger
  */
 class MultiplierRemover : Transformer {
 
-    override val priority = 2
-
     override fun transform(group: ClassGroup) {
         val multipliers = MultiplierFinder().getMultipliers(group)
 
         Logger.info("Found ${multipliers.size} multipliers.")
-        Logger.info("Removing multipliers.")
+        Logger.info("Applying inverted cancellation multipliers.")
 
         group.forEach { c ->
             c.methods.forEach { m ->

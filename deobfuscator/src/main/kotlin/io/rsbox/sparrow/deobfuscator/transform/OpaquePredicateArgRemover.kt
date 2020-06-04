@@ -27,8 +27,6 @@ import java.util.*
  */
 class OpaquePredicateArgRemover : Transformer {
 
-    override val priority = 9
-
     override fun transform(group: ClassGroup) {
         val namedGroup = group.map { it }.associateBy { it.name }
 

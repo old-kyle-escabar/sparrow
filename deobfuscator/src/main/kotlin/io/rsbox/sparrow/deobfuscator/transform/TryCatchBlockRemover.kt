@@ -20,8 +20,6 @@ import java.lang.RuntimeException
  */
 class TryCatchBlockRemover : Transformer {
 
-    override val priority = 4
-
     override fun transform(group: ClassGroup) {
         var counter = 0
 
