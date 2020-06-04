@@ -39,12 +39,14 @@ class Deobfuscator {
         UnusedFieldRemover::class,
         MultiplierRemover::class,
         ControlFlowFixer::class,
+        FieldInliner::class,
         TryCatchBlockRemover::class,
         ErrorContructorRemover::class,
         GotoRemover::class,
         DeadCodeRemover::class,
         OpaquePredicateCheckRemover::class,
-        OpaquePredicateArgRemover::class
+        OpaquePredicateArgRemover::class,
+        FieldSorter::class
     )
 
     /**
