@@ -72,8 +72,9 @@ class Deobfuscator {
 
     /**
      * Runs the deobfuscator.
+     * @param rename [Boolean] Whether to enabled the renamer transformer.
      */
-    fun deobfuscate() {
+    fun deobfuscate(rename: Boolean = true) {
         Logger.info("Preparing deobfuscator.")
 
         transformers.forEach {
@@ -81,6 +82,15 @@ class Deobfuscator {
 
             val transformer = it.java.getDeclaredConstructor().newInstance()
             transformer.transform(group)
+        }
+
+        if(rename) {
+            Logger.info("Renaming all nodes.")
+
+            val transformer = Renamer::class.java.getDeclaredConstructor().newInstance()
+            transformer.transform(group)
+
+            Logger.info("Completed renaming all nodes.")
         }
 
         Logger.info("Completed deobfuscation.")

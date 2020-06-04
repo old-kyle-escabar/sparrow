@@ -54,6 +54,11 @@ class ClassGroup : MutableList<ClassNode> by mutableListOf() {
         }
     }
 
+    /**
+     * Exports the current class group to a JAR file.
+     *
+     * @param file File
+     */
     fun toJar(file: File) {
         val jos = JarOutputStream(FileOutputStream(file))
 
@@ -69,4 +74,12 @@ class ClassGroup : MutableList<ClassNode> by mutableListOf() {
 
         jos.close()
     }
+
+    /**
+     * Gets a [ClassNode] with a given name.
+     *
+     * @param name String
+     * @return ClassNode?
+     */
+    operator fun get(name: String): ClassNode? = this.firstOrNull { it.name == name }
 }
