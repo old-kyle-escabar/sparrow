@@ -47,7 +47,8 @@ class Deobfuscator {
         OpaquePredicateCheckRemover::class,
         OpaquePredicateArgRemover::class,
         FieldSorter::class,
-        MethodSorter::class
+        MethodSorter::class,
+        DuplicateMethodRemover::class
     )
 
     /**

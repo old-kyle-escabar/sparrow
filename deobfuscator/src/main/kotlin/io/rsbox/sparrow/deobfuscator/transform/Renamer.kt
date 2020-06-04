@@ -2,16 +2,13 @@ package io.rsbox.sparrow.deobfuscator.transform
 
 import io.rsbox.sparrow.deobfuscator.Transformer
 import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
-import org.jgrapht.Graph
-import org.jgrapht.graph.DefaultDirectedGraph
-import org.jgrapht.graph.DefaultEdge
-import org.jgrapht.traverse.DepthFirstIterator
+import org.objectweb.asm.Opcodes.ACC_NATIVE
 import org.objectweb.asm.commons.ClassRemapper
 import org.objectweb.asm.commons.SimpleRemapper
 import org.objectweb.asm.tree.ClassNode
-import org.objectweb.asm.tree.FieldNode
 import org.objectweb.asm.tree.MethodNode
 import org.tinylog.kotlin.Logger
+import java.util.*
 
 /**
  * Copyright (c) 2020 RSBox
@@ -27,117 +24,145 @@ import org.tinylog.kotlin.Logger
  */
 class Renamer : Transformer {
 
-    override fun transform(group: ClassGroup) {
-        val mappings = mutableListOf<Mapping>()
-        val hierarchy = group.buildHierarchyGraph()
+    private var classCounter = 0
+    private var methodCounter = 0
+    private var fieldCounter = 0
 
-        var classCounter = 0
-        var methodCounter = 0
-        var fieldCounter = 0
+    private val mappings = hashMapOf<String, String>()
+
+    /**
+     * Run the renaming transformation.
+     */
+    override fun transform(group: ClassGroup) {
+        /**
+         * Generate the mappings.
+         */
+        this.generateMappings(group)
+        this.applyMappings(group)
+
+        Logger.info("Renamed [classes: $classCounter, methods: $methodCounter, fields: $fieldCounter].")
+    }
+
+    /**
+     * In order to properly generate mappings, we loop through all classes, methods, and fields and generate
+     * an incremental name remap.
+     *
+     * Then, for ones with possible members, we loop back through and set the names from their super member types.
+     */
+    private fun generateMappings(group: ClassGroup) {
+        /**
+         * Generate class name mappings.
+         */
+        group.forEach classLoop@ { c ->
+            if(c.name.length <= 2) {
+                mappings[c.name] = "class${++classCounter}"
+            }
+        }
 
         /**
-         * Build class mappings
+         * Generate method name mappings
          */
-        group.forEach { c ->
-            val mapping = Mapping()
+        group.forEach classLoop@ { c ->
+            c.methods.filter { it.isGamepackMethod() }.forEach methodLoop@ { m ->
+                val owner = c
+                if(m.name.indexOf("<") != -1 || (m.access and ACC_NATIVE) != 0) {
+                    return@methodLoop
+                }
 
-            if(c.name.length <= 2) {
-                mapping.classMapping = c to "class${++classCounter}"
-            } else {
-                mapping.classMapping = c to c.name
-            }
+                val stack = Stack<ClassNode>()
+                stack.add(owner)
+                while(stack.isNotEmpty()) {
+                    val node = stack.pop()
+                    if(node != owner && node.methods.firstOrNull { it.name == m.name && it.desc == m.desc } != null) {
+                        return@methodLoop
+                    }
 
-            /**
-             * First pass methods
-             */
-            c.methods.forEach { m ->
-                val inheritedFrom = m.inheritedFrom(hierarchy, c)
+                    val parent = group[node.superName]
+                    if(parent != null) {
+                        stack.push(parent)
+                    }
 
-                if(inheritedFrom.isEmpty()) {
-                    mapping.methodMappings.add(m to "method${++methodCounter}")
+                    val interfaces = node.interfaces.mapNotNull { group[it] }
+                    stack.addAll(interfaces)
+                }
+
+                val name = "method${++methodCounter}"
+
+                stack.add(owner)
+                while(stack.isNotEmpty()) {
+                    val node = stack.pop()
+                    val key = node.name + "." + m.name + m.desc
+                    mappings[key] = name
+                    group.forEach { k ->
+                        if(k.superName == node.name || k.interfaces.contains(node.name)) {
+                            stack.push(k)
+                        }
+                    }
                 }
             }
-
-            mappings.add(mapping)
         }
 
         /**
-         * Generate the flat mapping hashmap
+         * Generate field name mappings
          */
-        val flatMappings = hashMapOf<String, String>()
-        mappings.forEach {
-            flatMappings[it.classMapping.first.name] = it.classMapping.second
-            it.methodMappings.forEach { m ->
-                flatMappings[it.classMapping.first.name + "." + m.first.name + m.first.desc] = m.second
+        group.forEach classLoop@ { c ->
+            c.fields.filter { it.name.length <= 2 }.forEach fieldLoop@ { f ->
+                val owner = c
+                val stack = Stack<ClassNode>()
+
+                stack.add(owner)
+                while(stack.isNotEmpty()) {
+                    val node = stack.pop()
+                    if(node != owner && node.fields.firstOrNull { it.name == f.name && it.desc == f.desc } != null) {
+                        return@fieldLoop
+                    }
+
+                    val parent = group[node.superName]
+                    if(parent != null) {
+                        stack.push(parent)
+                    }
+
+                    val interfaces = node.interfaces.mapNotNull { group[it] }
+                    stack.addAll(interfaces)
+                }
+
+                val name = "field${++fieldCounter}"
+
+                stack.add(owner)
+                while(stack.isNotEmpty()) {
+                    val node = stack.pop()
+                    val key = node.name + "." + f.name
+                    mappings[key] = name
+                    group.forEach { k ->
+                        if(k.superName == node.name || k.interfaces.contains(node.name)) {
+                            stack.push(k)
+                        }
+                    }
+                }
             }
         }
 
-        /**
-         * Apply the renaming tranformations.
-         */
-        val remapper = SimpleRemapper(flatMappings)
+    }
+
+    /**
+     * Apply the mappings to the [group] using the ASM built in
+     * class remapping visitor.
+     */
+    private fun applyMappings(group: ClassGroup) {
+        val remapper = SimpleRemapper(mappings)
 
         group.forEachIndexed { index, c ->
-            val node = ClassNode()
-            c.accept(ClassRemapper(node, remapper))
-
-            group[index] = node
+            val newNode = ClassNode()
+            c.accept(ClassRemapper(newNode, remapper))
+            group[index] = newNode
         }
-
-        Logger.info("Renamed '$classCounter classes', '$methodCounter methods', and '$fieldCounter fields'.")
     }
 
-    private class Mapping {
-        lateinit var classMapping: Pair<ClassNode, String>
-        val methodMappings: MutableList<Pair<MethodNode, String>> = mutableListOf()
-        val fieldMappings: MutableList<Pair<FieldNode, String>> = mutableListOf()
-    }
 
-    /**
-     * Builds a JGrapht [Graph] for the class hierarchy.
-     *
-     * @receiver ClassGroup
-     * @return Graph<ClassNode, DefaultEdge>
-     */
-    private fun ClassGroup.buildHierarchyGraph(): Graph<ClassNode, DefaultEdge> {
-        val graph = DefaultDirectedGraph<ClassNode, DefaultEdge>(DefaultEdge::class.java)
-
-        this.forEach { c ->
-            graph.addVertex(c)
+    private fun MethodNode.isGamepackMethod(): Boolean {
+        if(this.name.length <= 2 || (this.name.length == 3 && this.name.startsWith("aa"))) {
+            return true
         }
-
-        this.forEach { c ->
-            val superNode = this[c.superName]
-            if(graph.containsVertex(superNode)) {
-                graph.addEdge(c, superNode)
-            }
-
-            c.interfaces.forEach { i ->
-                val interfaceNode = this[i]
-                if(graph.containsVertex(interfaceNode)) {
-                    graph.addEdge(c, interfaceNode)
-                }
-            }
-        }
-
-        return graph
-    }
-
-    /**
-     * Whether the method is inherited from a super class or interface.
-     *
-     * @receiver MethodNode
-     * @param hierarchy Graph<ClassNode, DefaultEdge>
-     * @param owner ClassNode
-     * @return List<MethodNode>
-     */
-    private fun MethodNode.inheritedFrom(hierarchy: Graph<ClassNode, DefaultEdge>, owner: ClassNode): List<MethodNode> {
-        val it = DepthFirstIterator(hierarchy, owner)
-
-        val inheritedClasses = it.iterator().asSequence().toList()
-            .filter { it != owner }
-        val inheritedMethods = inheritedClasses.flatMap { it.methods }
-
-        return inheritedMethods.filter { it.name == name && it.desc == desc }
+        return false
     }
 }
