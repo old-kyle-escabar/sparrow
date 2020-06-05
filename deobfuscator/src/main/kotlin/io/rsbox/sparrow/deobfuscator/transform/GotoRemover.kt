@@ -1,7 +1,7 @@
 package io.rsbox.sparrow.deobfuscator.transform
 
 import io.rsbox.sparrow.deobfuscator.Transformer
-import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassNodeGroup
 import org.objectweb.asm.Opcodes.GOTO
 import org.objectweb.asm.tree.JumpInsnNode
 import org.objectweb.asm.tree.LabelNode
@@ -22,7 +22,7 @@ import org.tinylog.kotlin.Logger
  */
 class GotoRemover : Transformer {
 
-    override fun transform(group: ClassGroup) {
+    override fun transform(group: ClassNodeGroup) {
         var counter = 0
 
         group.forEach { c ->

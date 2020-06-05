@@ -1,7 +1,7 @@
 package io.rsbox.sparrow.deobfuscator.transform.euclidean
 
 import io.rsbox.sparrow.deobfuscator.Transformer
-import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassNodeGroup
 import org.objectweb.asm.Opcodes.*
 import org.objectweb.asm.Type
 import org.objectweb.asm.Type.INT_TYPE
@@ -24,7 +24,7 @@ import org.tinylog.kotlin.Logger
  */
 class MultiplierRemover : Transformer {
 
-    override fun transform(group: ClassGroup) {
+    override fun transform(group: ClassNodeGroup) {
         val multipliers = MultiplierFinder().getMultipliers(group)
 
         Logger.info("Found ${multipliers.size} multipliers.")

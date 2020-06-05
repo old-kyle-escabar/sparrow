@@ -1,11 +1,10 @@
 package io.rsbox.sparrow.deobfuscator.transform
 
 import io.rsbox.sparrow.deobfuscator.Transformer
-import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassNodeGroup
 import org.objectweb.asm.tree.FieldInsnNode
 import org.tinylog.kotlin.Logger
 import java.lang.reflect.Modifier
-import java.util.*
 
 /**
  * Copyright (c) 2020 RSBox
@@ -21,7 +20,7 @@ import java.util.*
  */
 class UnusedFieldRemover : Transformer {
 
-    override fun transform(group: ClassGroup) {
+    override fun transform(group: ClassNodeGroup) {
         var counter = 0
 
         val usedFields = group.flatMap { it.methods }

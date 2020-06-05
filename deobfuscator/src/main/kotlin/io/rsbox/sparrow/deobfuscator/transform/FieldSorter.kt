@@ -1,7 +1,7 @@
 package io.rsbox.sparrow.deobfuscator.transform
 
 import io.rsbox.sparrow.deobfuscator.Transformer
-import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassNodeGroup
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.FieldNode
 import org.tinylog.kotlin.Logger
@@ -21,7 +21,7 @@ import java.lang.reflect.Modifier
  */
 class FieldSorter : Transformer {
 
-    override fun transform(group: ClassGroup) {
+    override fun transform(group: ClassNodeGroup) {
         group.forEach { c ->
             c.fields = c.fields.sortedWith(FIELD_COMPARATOR)
         }

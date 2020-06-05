@@ -22,7 +22,7 @@ import java.util.jar.JarOutputStream
  * Represents a collection of [ClassNode] loaded from a
  * JAR file.
  */
-class ClassGroup : MutableList<ClassNode> by mutableListOf() {
+class ClassNodeGroup : MutableList<ClassNode> by mutableListOf() {
 
     /**
      * Adds a [ClassNode] from the raw class bytes.

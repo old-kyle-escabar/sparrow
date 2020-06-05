@@ -2,7 +2,7 @@ package io.rsbox.sparrow.deobfuscator.transform
 
 import com.google.common.collect.TreeMultimap
 import io.rsbox.sparrow.deobfuscator.Transformer
-import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassNodeGroup
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.*
 import java.lang.reflect.Modifier
@@ -18,7 +18,7 @@ import java.lang.reflect.Modifier
 
 class DuplicateMethodRemover : Transformer {
 
-    override fun transform(group: ClassGroup) {
+    override fun transform(group: ClassNodeGroup) {
         val map = TreeMultimap.create<String, String>()
         group.forEach { c ->
             c.methods.filter { Modifier.isStatic(it.access) && it.name != "<clinit>" }.forEach { m ->

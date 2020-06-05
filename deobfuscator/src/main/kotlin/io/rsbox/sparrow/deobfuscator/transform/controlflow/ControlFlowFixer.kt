@@ -1,7 +1,7 @@
 package io.rsbox.sparrow.deobfuscator.transform.controlflow
 
 import io.rsbox.sparrow.deobfuscator.Transformer
-import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassNodeGroup
 import org.objectweb.asm.tree.InsnList
 import org.objectweb.asm.tree.LabelNode
 import org.tinylog.kotlin.Logger
@@ -19,7 +19,7 @@ import kotlin.collections.AbstractMap
 
 class ControlFlowFixer : Transformer {
 
-    override fun transform(group: ClassGroup) {
+    override fun transform(group: ClassNodeGroup) {
         var counter = 0
 
         group.forEach { c ->

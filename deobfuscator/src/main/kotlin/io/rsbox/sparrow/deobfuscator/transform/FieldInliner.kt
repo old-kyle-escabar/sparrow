@@ -1,7 +1,7 @@
 package io.rsbox.sparrow.deobfuscator.transform
 
 import io.rsbox.sparrow.deobfuscator.Transformer
-import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassNodeGroup
 import org.objectweb.asm.Opcodes.GETSTATIC
 import org.objectweb.asm.Opcodes.PUTSTATIC
 import org.objectweb.asm.tree.ClassNode
@@ -24,7 +24,7 @@ import java.lang.reflect.Modifier
  */
 class FieldInliner : Transformer {
 
-    override fun transform(group: ClassGroup) {
+    override fun transform(group: ClassNodeGroup) {
         var counter = 0
 
         val resolver = FieldResolver(group)
@@ -58,7 +58,7 @@ class FieldInliner : Transformer {
      * @property group ClassGroup
      * @constructor
      */
-    private class FieldResolver(private val group: ClassGroup) {
+    private class FieldResolver(private val group: ClassNodeGroup) {
 
         /**
          * A map of [group] to the class name as a key.

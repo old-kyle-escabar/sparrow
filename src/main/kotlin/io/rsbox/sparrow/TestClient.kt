@@ -1,4 +1,6 @@
-package io.rsbox.sparrow.test
+@file:Suppress("DEPRECATION")
+
+package io.rsbox.sparrow
 
 import org.tinylog.kotlin.Logger
 import java.applet.Applet

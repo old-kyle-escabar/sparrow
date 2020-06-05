@@ -2,7 +2,7 @@ package io.rsbox.sparrow.deobfuscator.transform.euclidean
 
 import com.google.common.collect.HashMultiset
 import com.google.common.collect.MultimapBuilder
-import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassNodeGroup
 import org.objectweb.asm.Opcodes.*
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.AbstractInsnNode
@@ -10,7 +10,6 @@ import org.objectweb.asm.tree.FieldInsnNode
 import org.objectweb.asm.tree.LdcInsnNode
 import org.objectweb.asm.tree.analysis.*
 import org.tinylog.kotlin.Logger
-import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 import kotlin.math.absoluteValue
@@ -33,12 +32,12 @@ import kotlin.math.absoluteValue
 class MultiplierFinder {
 
     /**
-     * Gets the multipliers for the primitive field getters for a [ClassGroup]
+     * Gets the multipliers for the primitive field getters for a [ClassNodeGroup]
      *
      * @param group ClassGroup
      * @return Map<String, Long>
      */
-    fun getMultipliers(group: ClassGroup): Map<String, Long> {
+    fun getMultipliers(group: ClassNodeGroup): Map<String, Long> {
         Logger.info("Calculating multipliers.")
 
         val multipliers = Multipliers()

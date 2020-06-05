@@ -44,7 +44,6 @@ dependencies {
     /**
      * Module inclusions
      */
-    implementation(project(":util"))
     implementation(project(":deobfuscator"))
 }
 

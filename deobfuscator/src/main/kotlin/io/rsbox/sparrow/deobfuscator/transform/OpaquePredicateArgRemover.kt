@@ -3,7 +3,7 @@ package io.rsbox.sparrow.deobfuscator.transform
 import com.google.common.collect.MultimapBuilder
 import com.google.common.collect.TreeMultimap
 import io.rsbox.sparrow.deobfuscator.Transformer
-import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassNodeGroup
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.*
@@ -27,7 +27,7 @@ import java.util.*
  */
 class OpaquePredicateArgRemover : Transformer {
 
-    override fun transform(group: ClassGroup) {
+    override fun transform(group: ClassNodeGroup) {
         val namedGroup = group.map { it }.associateBy { it.name }
 
         val changedMethods = TreeMap<String, String>()
