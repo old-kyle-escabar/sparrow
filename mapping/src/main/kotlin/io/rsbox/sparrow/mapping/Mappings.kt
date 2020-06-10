@@ -1,5 +1,8 @@
 package io.rsbox.sparrow.mapping
 
+import io.rsbox.sparrow.asm.Class
+import io.rsbox.sparrow.asm.Method
+
 /**
  * Copyright (c) 2020 RSBox
  *
@@ -13,4 +16,14 @@ package io.rsbox.sparrow.mapping
  * Represents a group of mappings for classes, methods, and fields.
  */
 class Mappings {
+
+    /**
+     * Class mappings.
+     */
+    val classMappings = mutableListOf<Mapping<Class>>()
+
+    /**
+     * Method mappings.
+     */
+    val methodMappings = mutableListOf<Mapping<Method>>()
 }

@@ -62,6 +62,11 @@ class Class(val group: ClassGroup, val node: ClassNode) {
     val methods = node.methods.map { Method(group, this, it) }
 
     /**
+     * The fields belonging to this class object.
+     */
+    val fields = node.fields.map { Field(group, this, it) }
+
+    /**
      * A unique identifier for the class object.
      */
     val id get() = type
