@@ -27,6 +27,41 @@ class ClassGroup private constructor(nodes: Collection<ClassNode>) {
      */
     val classes = nodes.map { Class(this, it) }.toMutableList()
 
+    /**
+     * Finds a [Class] with a given name
+     *
+     * @param name String
+     * @return Class?
+     */
+    operator fun get(name: String): Class? = classes.firstOrNull { it.name == name }
+
+    /**
+     * Replaces a [Class] with a new object at the given index.
+     *
+     * @param name String
+     * @param value Class
+     * @return Boolean
+     */
+    fun replace(name: String, value: Class): Boolean {
+        if(this[name] == null) return false
+
+        val index = classes.indexOf(this[name])
+        classes.removeAt(index)
+        classes.add(index, value)
+
+        return true
+    }
+
+    /**
+     * Removes a [Class] from the group.
+     *
+     * @param target Class
+     * @return Boolean
+     */
+    fun remove(target: Class): Boolean {
+        return classes.remove(target)
+    }
+
     companion object {
         /**
          * Initializes a [ClassGroup] object from a JAR file.

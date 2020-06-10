@@ -1,3 +1,7 @@
+plugins {
+    `maven-publish`
+}
+
 description = "ASM"
 
 dependencies {

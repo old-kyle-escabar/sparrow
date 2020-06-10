@@ -1,5 +1,6 @@
 package io.rsbox.sparrow.asm
 
+import org.objectweb.asm.Type
 import org.objectweb.asm.tree.ClassNode
 
 /**
@@ -24,4 +25,14 @@ class Class(val group: ClassGroup, val node: ClassNode) {
      * The name of the class.
      */
     val name get() = node.name
+
+    /**
+     * The access bitpack of the class.
+     */
+    val access get() = node.access
+
+    /**
+     * The class object ASM [Type].
+     */
+    val type get() = Type.getObjectType(name)
 }

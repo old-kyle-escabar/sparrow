@@ -14,6 +14,7 @@ allprojects {
     version = Project.version
 
     repositories {
+        mavenLocal()
         mavenCentral()
         jcenter()
     }
