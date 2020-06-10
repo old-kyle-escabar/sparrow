@@ -27,6 +27,11 @@ class Class(val group: ClassGroup, val node: ClassNode) {
     val name get() = node.name
 
     /**
+     * The abstract class name this class extends.
+     */
+    val superName get() = node.superName
+
+    /**
      * The access bitpack of the class.
      */
     val access get() = node.access
@@ -35,4 +40,31 @@ class Class(val group: ClassGroup, val node: ClassNode) {
      * The class object ASM [Type].
      */
     val type get() = Type.getObjectType(name)
+
+    /**
+     * The inherited class ASM [Type].
+     */
+    val superType get() = Type.getObjectType(superName)
+
+    /**
+     * The class name of the implemented interface classes.
+     */
+    val interfaceNames get() = node.interfaces
+
+    /**
+     * The interfaces [Class] objects.
+     */
+    val interfaces get() = node.interfaces.mapNotNull { group[it] }
+
+    /**
+     * A unique identifier for the class object.
+     */
+    val id get() = type
+
+    /**
+     * A string representation of this class.
+     *
+     * @return String
+     */
+    override fun toString(): String = name
 }
