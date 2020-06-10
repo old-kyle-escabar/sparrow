@@ -17,7 +17,7 @@ import java.util.jar.JarFile
 /**
  * Represents a group of [Class] objects.
  *
- * @property classes MutableList<Class>
+ * @param nodes Collection<ClassNode>
  * @constructor
  */
 class ClassGroup private constructor(nodes: Collection<ClassNode>) {
