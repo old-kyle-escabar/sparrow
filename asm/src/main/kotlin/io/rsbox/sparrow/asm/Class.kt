@@ -57,6 +57,11 @@ class Class(val group: ClassGroup, val node: ClassNode) {
     val interfaces get() = node.interfaces.mapNotNull { group[it] }
 
     /**
+     * The methods belonging to this class object.
+     */
+    val methods = node.methods.map { Method(group, this, it) }
+
+    /**
      * A unique identifier for the class object.
      */
     val id get() = type
