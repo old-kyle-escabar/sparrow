@@ -1,6 +1,11 @@
 package io.rsbox.sparrow.mapper
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder
+import io.rsbox.sparrow.asm.Class
 import io.rsbox.sparrow.asm.ClassGroup
+import io.rsbox.sparrow.asm.Field
+import io.rsbox.sparrow.asm.Method
+import io.rsbox.sparrow.mapper.classifier.ClassClassifier
 import org.tinylog.kotlin.Logger
 import java.io.File
 
@@ -33,6 +38,13 @@ class Mapper(val sourceJar: File, val referenceJar: File) {
     internal lateinit var referenceGroup: ClassGroup
 
     /**
+     * The ranked classified results
+     */
+    private lateinit var classResults: Set<List<RankResult<Class>>>
+    private lateinit var methodResults: Set<List<RankResult<Method>>>
+    private lateinit var fieldResults: Set<List<RankResult<Field>>>
+
+    /**
      * Loads both the source and reference JAR files.
      */
     fun loadJars() {
@@ -52,6 +64,28 @@ class Mapper(val sourceJar: File, val referenceJar: File) {
     fun classifyAll(threads: Int = 4) {
         Logger.info("Preparing to classify all in parallel.")
 
+        classResults = classifyClasses()
+    }
 
+    /**
+     * Classifies all the classes.
+     *
+     * @return List<RankResult<Class>>
+     */
+    private fun classifyClasses(): Set<List<RankResult<Class>>> {
+        Logger.info("Analyzing classes...")
+
+        val classifier = ClassClassifier()
+        classifier.init()
+
+        val results = hashSetOf<List<RankResult<Class>>>()
+
+        sourceGroup.classes.forEach {
+            val res = classifier.rank(it, referenceGroup.classes.toTypedArray(), it.group)
+                .sortedByDescending { it.score }
+            results.add(res)
+        }
+
+        return results
     }
 }

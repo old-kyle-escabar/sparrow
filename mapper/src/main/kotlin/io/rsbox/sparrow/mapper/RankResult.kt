@@ -9,4 +9,4 @@ package io.rsbox.sparrow.mapper
  * @author Kyle Escobar
  */
 
-data class RankResult<T>(val subject: T, val score: Double)
+data class RankResult<T>(val subject: T, val target: T, val score: Double)
