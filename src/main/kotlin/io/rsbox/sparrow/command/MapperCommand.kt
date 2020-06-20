@@ -28,14 +28,11 @@ class MapperCommand : CliktCommand(
 ) {
 
     private val sourceJar by argument(name = "Source", help = "The obfuscated JAR to be mapped.").file(mustExist = true, canBeDir = false)
-
     private val referenceJar by argument(name = "Reference", help = "Reference renamed JAR file to build mappings from.").file(mustExist = true, canBeDir = false)
-
     private val threads by option("-t", "--threads", help = "The number of threads to run the matching on.").int().default(4)
 
     override fun run() {
         val mapper = Mapper(sourceJar, referenceJar)
-        mapper.loadJars()
-        mapper.classifyAll(threads)
+        mapper.classify()
     }
 }

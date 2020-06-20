@@ -1,7 +1,5 @@
 package io.rsbox.sparrow.mapper.classifier
 
-import io.rsbox.sparrow.asm.ClassGroup
-
 /**
  * Copyright (c) 2020 RSBox
  *
@@ -13,9 +11,22 @@ import io.rsbox.sparrow.asm.ClassGroup
 
 interface Classifier<T> {
 
-    val name: String
+    /**
+     * The name of the classifier
+     */
+    var name: String
 
-    val weight: Double
+    /**
+     * The weight of the classifier.
+     */
+    var weight: Double
 
-    fun calculateScore(src: T, target: T, group: ClassGroup): Double
+    /**
+     * Calculates the score given two objects.
+     *
+     * @param source T
+     * @param target T
+     * @return Double
+     */
+    fun calculate(source: T, target: T): Double
 }
