@@ -2,6 +2,7 @@ package io.rsbox.sparrow.command
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.requireObject
+import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
@@ -30,6 +31,9 @@ class DeobfuscatorCommand : CliktCommand(
      */
     private val config by requireObject<MutableMap<String, Any>>()
 
+    private val enableRenamer by option("--rename", help = "Enables the renaming of classes, methods, and fields.")
+        .flag(default = false)
+
     /**
      * The input source JAR file.
      */
@@ -45,10 +49,11 @@ class DeobfuscatorCommand : CliktCommand(
     override fun run() {
         config["sourceJar"] = sourceJar
         config["outputJar"] = outputJar
+        config["enableRenamer"] = enableRenamer
 
         val deobfuscator = Deobfuscator()
         deobfuscator.loadJar(sourceJar)
-        deobfuscator.deobfuscate()
+        deobfuscator.deobfuscate(rename = enableRenamer)
         deobfuscator.exportJar(outputJar)
     }
 }

@@ -46,6 +46,7 @@ dependencies {
      * Module inclusions
      */
     implementation(project(":deobfuscator"))
+    implementation(project(":mapper"))
 }
 
 tasks.withType<JavaExec> {
