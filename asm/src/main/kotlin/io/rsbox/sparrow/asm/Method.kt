@@ -20,7 +20,7 @@ import org.objectweb.asm.tree.MethodNode
  * @property node MethodNode
  * @constructor
  */
-class Method(val group: ClassGroup, val owner: Class, val node: MethodNode) {
+class Method(val group: ClassGroup, val owner: Class, val node: MethodNode) : Matchable<Method>() {
 
     /**
      * The name of the method.
