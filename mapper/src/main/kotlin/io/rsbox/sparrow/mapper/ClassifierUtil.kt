@@ -4,7 +4,13 @@ import io.rsbox.sparrow.asm.Class
 import io.rsbox.sparrow.asm.Field
 import io.rsbox.sparrow.asm.Matchable
 import io.rsbox.sparrow.asm.Method
+import org.objectweb.asm.tree.AbstractInsnNode
+import org.objectweb.asm.tree.AbstractInsnNode.INT_INSN
+import org.objectweb.asm.tree.AbstractInsnNode.VAR_INSN
+import org.objectweb.asm.tree.IntInsnNode
+import org.objectweb.asm.tree.VarInsnNode
 import java.util.function.BiPredicate
+import java.util.function.ToIntBiFunction
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -70,6 +76,51 @@ object ClassifierUtil {
     /**
      * Private utility methods
      */
+
+    /**
+     * Compares method instructions between two given methods.
+     *
+     * @param insnA AbstractInsnNode
+     * @param insnB AbstractInsnNode
+     * @param listA T
+     * @param listB T
+     * @param posProvider ToIntBiFunction<T, AbstractInsnNode>
+     * @param methodA Method
+     * @param methodB Method
+     * @return Boolean
+     */
+    private fun <T> compareInstructions(
+        insnA: AbstractInsnNode,
+        insnB: AbstractInsnNode,
+        listA: T,
+        listB: T,
+        posProvider: ToIntBiFunction<T, AbstractInsnNode>,
+        methodA: Method?,
+        methodB: Method?
+    ) : Boolean {
+        if(insnA.opcode != insnB.opcode) return false
+
+        when(insnA.type) {
+            /**
+             * INT Instruction type
+             */
+            INT_INSN -> {
+                val a = insnA as IntInsnNode
+                val b = insnB as IntInsnNode
+
+                return a.operand == b.operand
+            }
+
+            /**
+             * VAR Instruction type
+             */
+            VAR_INSN -> {
+                // TODO
+            }
+        }
+
+        return true
+    }
 
     private fun <T, U> compareLists(listA: T, listB: T, elementConsumer: ListElementConsumer<T, U>, sizeConsumer: ListSizeConsumer<T>, elementComparator: BiPredicate<U, U>): Double {
         val sizeA = sizeConsumer.apply(listA)
