@@ -4,8 +4,10 @@ import io.rsbox.sparrow.asm.Class
 import io.rsbox.sparrow.asm.Field
 import io.rsbox.sparrow.asm.Matchable
 import io.rsbox.sparrow.asm.Method
+import java.util.function.BiPredicate
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Copyright (c) 2020 RSBox
@@ -68,4 +70,59 @@ object ClassifierUtil {
     /**
      * Private utility methods
      */
+
+    private fun <T, U> compareLists(listA: T, listB: T, elementConsumer: ListElementConsumer<T, U>, sizeConsumer: ListSizeConsumer<T>, elementComparator: BiPredicate<U, U>): Double {
+        val sizeA = sizeConsumer.apply(listA)
+        val sizeB = sizeConsumer.apply(listB)
+
+        if(sizeA == 0 && sizeB == 0) return 1.0
+        if(sizeA == 0 || sizeB == 0) return 0.0
+
+        if(sizeA == sizeB) {
+            var match = true
+
+            for(i in 0 until sizeA) {
+                if(!elementComparator.test(elementConsumer.apply(listA, i), elementConsumer.apply(listB, i))) {
+                    match = false
+                    break
+                }
+            }
+
+            if(match) return 1.0
+        }
+
+        val v0 = IntArray(sizeB + 1)
+        val v1 = IntArray(sizeB + 1)
+
+        for(i in v0.indices) {
+            v0[i] = i
+        }
+
+        for(i in 0 until sizeA) {
+            v1[0] = i + 1
+
+            for(j in 0 until sizeB) {
+                val cost = if(elementComparator.test(elementConsumer.apply(listA, i), elementConsumer.apply(listB, j))) 0.0 else 1.0
+                v1[j + 1] = min(min(v1[j] + 1, v0[j + 1] + 1), (v0[j] + cost).toInt())
+            }
+
+            for(j in v0.indices) {
+                v0[j] = v1[j]
+            }
+        }
+
+        val distance = v1[sizeB]
+        val upperBound = max(sizeA, sizeB)
+        assert(distance in 0..upperBound)
+
+        return (1 - distance / upperBound).toDouble()
+    }
+
+    private interface ListElementConsumer<T, U> {
+        fun apply(list: T, pos: Int): U
+    }
+
+    private interface ListSizeConsumer<T> {
+        fun apply(list: T): Int
+    }
 }
