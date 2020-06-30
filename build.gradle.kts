@@ -14,6 +14,7 @@ allprojects {
     version = Project.version
 
     repositories {
+        mavenLocal()
         mavenCentral()
         jcenter()
     }
@@ -44,8 +45,8 @@ dependencies {
     /**
      * Module inclusions
      */
-    implementation(project(":util"))
     implementation(project(":deobfuscator"))
+    implementation(project(":mapper"))
 }
 
 tasks.withType<JavaExec> {

@@ -4,7 +4,7 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
-import io.rsbox.sparrow.test.TestClient
+import io.rsbox.sparrow.TestClient
 
 /**
  * Copyright (c) 2020 RSBox

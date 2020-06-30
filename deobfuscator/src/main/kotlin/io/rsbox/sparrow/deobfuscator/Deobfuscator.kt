@@ -1,6 +1,6 @@
 package io.rsbox.sparrow.deobfuscator
 
-import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassNodeGroup
 import io.rsbox.sparrow.deobfuscator.transform.*
 import io.rsbox.sparrow.deobfuscator.transform.controlflow.ControlFlowFixer
 import io.rsbox.sparrow.deobfuscator.transform.euclidean.MultiplierRemover
@@ -25,7 +25,7 @@ class Deobfuscator {
     /**
      * Represents the current loaded class group.
      */
-    val group = ClassGroup()
+    val group = ClassNodeGroup()
 
     /**
      * The bytecode transformers to run on the [group]
@@ -53,7 +53,7 @@ class Deobfuscator {
     )
 
     /**
-     * Loads a JAR file into the [ClassGroup].
+     * Loads a JAR file into the [ClassNodeGroup].
      *
      * @param file File
      */

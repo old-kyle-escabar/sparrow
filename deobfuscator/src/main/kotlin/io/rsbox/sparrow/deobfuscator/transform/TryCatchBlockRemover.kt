@@ -1,7 +1,7 @@
 package io.rsbox.sparrow.deobfuscator.transform
 
 import io.rsbox.sparrow.deobfuscator.Transformer
-import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassNodeGroup
 import org.objectweb.asm.Type
 import org.tinylog.kotlin.Logger
 import java.lang.RuntimeException
@@ -20,7 +20,7 @@ import java.lang.RuntimeException
  */
 class TryCatchBlockRemover : Transformer {
 
-    override fun transform(group: ClassGroup) {
+    override fun transform(group: ClassNodeGroup) {
         var counter = 0
 
         group.forEach { c ->

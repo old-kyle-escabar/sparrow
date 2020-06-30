@@ -3,7 +3,7 @@ package io.rsbox.sparrow.deobfuscator.transform
 import com.google.common.collect.Multimap
 import com.google.common.collect.MultimapBuilder
 import io.rsbox.sparrow.deobfuscator.Transformer
-import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassNodeGroup
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.MethodInsnNode
@@ -30,7 +30,7 @@ class UnusedMethodRemover : Transformer {
      *
      * @param group ClassGroup
      */
-    override fun transform(group: ClassGroup) {
+    override fun transform(group: ClassNodeGroup) {
         val unusedMethods = group.unusedMethods
         var counter = 0
 
@@ -50,9 +50,9 @@ class UnusedMethodRemover : Transformer {
     }
 
     /**
-     * A [TreeSet] of the unused methods in a [ClassGroup]
+     * A [TreeSet] of the unused methods in a [ClassNodeGroup]
      */
-    private val ClassGroup.unusedMethods: TreeSet<String> get() {
+    private val ClassNodeGroup.unusedMethods: TreeSet<String> get() {
         val namedGroup = this.associateBy { it.name }
 
         val supers = MultimapBuilder.hashKeys().arrayListValues().build<ClassNode, String>()

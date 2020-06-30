@@ -1,7 +1,7 @@
 package io.rsbox.sparrow.deobfuscator.transform
 
 import io.rsbox.sparrow.deobfuscator.Transformer
-import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassNodeGroup
 import org.objectweb.asm.Opcodes.ACC_NATIVE
 import org.objectweb.asm.commons.ClassRemapper
 import org.objectweb.asm.commons.SimpleRemapper
@@ -33,7 +33,7 @@ class Renamer : Transformer {
     /**
      * Run the renaming transformation.
      */
-    override fun transform(group: ClassGroup) {
+    override fun transform(group: ClassNodeGroup) {
         /**
          * Generate the mappings.
          */
@@ -49,7 +49,7 @@ class Renamer : Transformer {
      *
      * Then, for ones with possible members, we loop back through and set the names from their super member types.
      */
-    private fun generateMappings(group: ClassGroup) {
+    private fun generateMappings(group: ClassNodeGroup) {
         /**
          * Generate class name mappings.
          */
@@ -148,7 +148,7 @@ class Renamer : Transformer {
      * Apply the mappings to the [group] using the ASM built in
      * class remapping visitor.
      */
-    private fun applyMappings(group: ClassGroup) {
+    private fun applyMappings(group: ClassNodeGroup) {
         val remapper = SimpleRemapper(mappings)
 
         group.forEachIndexed { index, c ->

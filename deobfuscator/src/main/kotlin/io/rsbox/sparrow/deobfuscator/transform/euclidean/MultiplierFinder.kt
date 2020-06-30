@@ -2,7 +2,7 @@ package io.rsbox.sparrow.deobfuscator.transform.euclidean
 
 import com.google.common.collect.HashMultiset
 import com.google.common.collect.MultimapBuilder
-import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassNodeGroup
 import org.objectweb.asm.Opcodes.*
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.AbstractInsnNode
@@ -10,7 +10,6 @@ import org.objectweb.asm.tree.FieldInsnNode
 import org.objectweb.asm.tree.LdcInsnNode
 import org.objectweb.asm.tree.analysis.*
 import org.tinylog.kotlin.Logger
-import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 import kotlin.math.absoluteValue
@@ -33,12 +32,12 @@ import kotlin.math.absoluteValue
 class MultiplierFinder {
 
     /**
-     * Gets the multipliers for the primitive field getters for a [ClassGroup]
+     * Gets the multipliers for the primitive field getters for a [ClassNodeGroup]
      *
      * @param group ClassGroup
      * @return Map<String, Long>
      */
-    fun getMultipliers(group: ClassGroup): Map<String, Long> {
+    fun getMultipliers(group: ClassNodeGroup): Map<String, Long> {
         Logger.info("Calculating multipliers.")
 
         val multipliers = Multipliers()
@@ -255,12 +254,18 @@ class MultiplierFinder {
             if (pairs.isNotEmpty()) return pairs.single().decoder
             val fs = distinct.filter { f -> distinct.all { isFactor(it, f) } }
             if (fs.size == 1) return fs.single().decoder
-            check(fs.size == 2 && fs.size == distinct.size)
-            val counts = HashMultiset.create(ms)
+            check(fs.size == 2 && fs[0].dec != fs[1].dec)
+
+            /**
+             * Jagex removed the single multiplier checks
+             * wtf jagex.
+             */
+            /*val counts = HashMultiset.create(ms)
             val maxCount = counts.entrySet().maxBy { it.count }!!.count
             val maxs = counts.entrySet().filter { it.count == maxCount }
-            if (maxs.size == 1) return maxs.single().element.decoder
-            return distinct.first { it.dec }.n
+            if (maxs.size == 1) return maxs.single().element.decoder*/
+
+            return fs.first { it.dec }.decoder
         }
 
         private fun isFactor(product: Mul, factor: Mul) = div(product, factor).toLong().absoluteValue <= 0xff

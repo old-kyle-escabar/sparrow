@@ -2,6 +2,7 @@ package io.rsbox.sparrow
 
 import com.github.ajalt.clikt.core.subcommands
 import io.rsbox.sparrow.command.DeobfuscatorCommand
+import io.rsbox.sparrow.command.MapperCommand
 import io.rsbox.sparrow.command.SparrowCommand
 import io.rsbox.sparrow.command.TestClientCommand
 
@@ -28,7 +29,8 @@ class Sparrow {
 
             val subcommands = listOf(
                 DeobfuscatorCommand(),
-                TestClientCommand()
+                TestClientCommand(),
+                MapperCommand()
             )
 
             SparrowCommand()

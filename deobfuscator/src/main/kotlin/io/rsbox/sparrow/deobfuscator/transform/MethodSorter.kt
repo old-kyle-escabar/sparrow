@@ -1,7 +1,7 @@
 package io.rsbox.sparrow.deobfuscator.transform
 
 import io.rsbox.sparrow.deobfuscator.Transformer
-import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassNodeGroup
 import org.objectweb.asm.tree.LineNumberNode
 import org.objectweb.asm.tree.MethodNode
 import org.tinylog.kotlin.Logger
@@ -20,7 +20,7 @@ import org.tinylog.kotlin.Logger
  */
 class MethodSorter : Transformer {
 
-    override fun transform(group: ClassGroup) {
+    override fun transform(group: ClassNodeGroup) {
         group.forEach { c ->
             val methodsByLineCount = c.methods.associateWith { (it.firstLineIndex) ?: Integer.MAX_VALUE }
             c.methods = c.methods.sortedBy { methodsByLineCount.getValue(it) }

@@ -1,6 +1,6 @@
 package io.rsbox.sparrow.deobfuscator
 
-import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassNodeGroup
 
 /**
  * Copyright (c) 2020 RSBox
@@ -17,5 +17,5 @@ interface Transformer {
      *
      * @param group ClassGroup
      */
-    fun transform(group: ClassGroup)
+    fun transform(group: ClassNodeGroup)
 }

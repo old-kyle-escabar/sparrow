@@ -1,7 +1,7 @@
 package io.rsbox.sparrow.deobfuscator.transform
 
 import io.rsbox.sparrow.deobfuscator.Transformer
-import io.rsbox.sparrow.deobfuscator.asm.ClassGroup
+import io.rsbox.sparrow.deobfuscator.asm.ClassNodeGroup
 import org.objectweb.asm.Opcodes.*
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.*
@@ -26,7 +26,7 @@ import java.lang.reflect.Modifier
  */
 class OpaquePredicateCheckRemover : Transformer {
 
-    override fun transform(group: ClassGroup) {
+    override fun transform(group: ClassNodeGroup) {
         var counter = 0
 
         /**

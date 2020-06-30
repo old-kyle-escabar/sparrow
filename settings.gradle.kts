@@ -1,4 +1,6 @@
 rootProject.name = "sparrow"
 
-include(":util")
 include(":deobfuscator")
+include(":asm")
+include(":mapping")
+include(":mapper")
