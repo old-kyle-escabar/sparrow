@@ -2,18 +2,18 @@ package io.rsbox.sparrow.mapper
 
 import io.rsbox.sparrow.asm.Class
 import io.rsbox.sparrow.asm.Field
-import io.rsbox.sparrow.asm.Matchable
 import io.rsbox.sparrow.asm.Method
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.AbstractInsnNode.INT_INSN
 import org.objectweb.asm.tree.AbstractInsnNode.VAR_INSN
+import org.objectweb.asm.tree.InsnList
 import org.objectweb.asm.tree.IntInsnNode
-import org.objectweb.asm.tree.VarInsnNode
 import java.util.function.BiPredicate
 import java.util.function.ToIntBiFunction
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
+
 
 /**
  * Copyright (c) 2020 RSBox
@@ -73,6 +73,52 @@ object ClassifierUtil {
         return (if(total == 0) 1 else matched / total).toDouble()
     }
 
+    fun compareInstructions(
+        a: Method,
+        b: Method
+    ): Double {
+        /**
+         * Method instruction lists
+         */
+        val insnListA = a.node.instructions
+        val insnListB = b.node.instructions
+
+        /**
+         * Element retriever object
+         */
+        val elementRetriever = object : ListElementRetriever<InsnList, AbstractInsnNode> {
+            override fun apply(list: InsnList, pos: Int): AbstractInsnNode {
+                return list[pos]
+            }
+        }
+
+        /**
+         * Size retriever object
+         */
+        val sizeRetriever = object : ListSizeRetriever<InsnList> {
+            override fun apply(list: InsnList): Int {
+                return list.size()
+            }
+        }
+
+        /**
+         * Predicate comparator
+         */
+        val comparator =
+            BiPredicate<AbstractInsnNode, AbstractInsnNode> { t, u ->
+                val posProvider = ToIntBiFunction<InsnList, AbstractInsnNode> { list, index ->
+                    list.indexOf(index)
+                }
+
+                compareInstructions(t, u, insnListA, insnListB, posProvider, a, b)
+            }
+
+        /**
+         * Compare the instruction list matching.
+         */
+        return compareLists(insnListA, insnListB, elementRetriever, sizeRetriever, comparator)
+    }
+
     /**
      * Private utility methods
      */
@@ -122,7 +168,7 @@ object ClassifierUtil {
         return true
     }
 
-    private fun <T, U> compareLists(listA: T, listB: T, elementConsumer: ListElementConsumer<T, U>, sizeConsumer: ListSizeConsumer<T>, elementComparator: BiPredicate<U, U>): Double {
+    private fun <T, U> compareLists(listA: T, listB: T, elementConsumer: ListElementRetriever<T, U>, sizeConsumer: ListSizeRetriever<T>, elementComparator: BiPredicate<U, U>): Double {
         val sizeA = sizeConsumer.apply(listA)
         val sizeB = sizeConsumer.apply(listB)
 
@@ -169,11 +215,11 @@ object ClassifierUtil {
         return (1 - distance / upperBound).toDouble()
     }
 
-    private interface ListElementConsumer<T, U> {
+    private interface ListElementRetriever<T, U> {
         fun apply(list: T, pos: Int): U
     }
 
-    private interface ListSizeConsumer<T> {
+    private interface ListSizeRetriever<T> {
         fun apply(list: T): Int
     }
 }
