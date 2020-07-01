@@ -19,7 +19,7 @@ import org.objectweb.asm.tree.ClassNode
  * @property node ClassNode
  * @constructor
  */
-class Class(val group: ClassGroup, val node: ClassNode) : Matchable<Class>() {
+class Class(val group: ClassGroup, override val node: ClassNode) : Node<ClassNode> {
 
     /**
      * The name of the class.

@@ -9,11 +9,15 @@ package io.rsbox.sparrow.asm
  * @author Kyle Escobar
  */
 
-abstract class Matchable<T> {
+/**
+ * Represents an ASM node type.
+ *
+ * @param T
+ */
+interface Node<T> {
 
-    var match: T? = null
-
-    val isMatched: Boolean get() {
-        return match != null
-    }
+    /**
+     * The associated ASM node.
+     */
+    val node: T
 }

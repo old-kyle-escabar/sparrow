@@ -6,7 +6,6 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.int
-import io.rsbox.sparrow.mapper.Mapper
 
 /**
  * Copyright (c) 2020 RSBox
@@ -27,12 +26,11 @@ class MapperCommand : CliktCommand(
     invokeWithoutSubcommand = false
 ) {
 
-    private val sourceJar by argument(name = "Source", help = "The obfuscated JAR to be mapped.").file(mustExist = true, canBeDir = false)
-    private val referenceJar by argument(name = "Reference", help = "Reference renamed JAR file to build mappings from.").file(mustExist = true, canBeDir = false)
-    private val threads by option("-t", "--threads", help = "The number of threads to run the matching on.").int().default(4)
+    private val sourceJar by argument(name = "Source", help = "The source JAR file with original names.").file(mustExist = true, canBeDir = false)
+    private val referenceJar by argument(name = "Reference", help = "The reference JAR file with the renamed names.").file(mustExist = true, canBeDir = false)
+    private val threads by option("-t", "--threads", help = "The number of threads to run the mapper on.").int().default(4)
 
     override fun run() {
-        val mapper = Mapper(sourceJar, referenceJar)
-        mapper.classify()
+
     }
 }
