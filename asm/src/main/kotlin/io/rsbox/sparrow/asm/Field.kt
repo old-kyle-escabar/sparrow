@@ -20,7 +20,12 @@ import org.objectweb.asm.tree.FieldNode
  * @property node FieldNode
  * @constructor
  */
-class Field(val group: ClassGroup, val owner: Class, override val node: FieldNode) : Node<FieldNode> {
+class Field(val group: ClassGroup, val owner: Class, override val node: FieldNode) : Node<FieldNode>, Matchable<Field> {
+
+    /**
+     * The matched type.
+     */
+    override var match: Field? = null
 
     /**
      * The name of the field
