@@ -43,10 +43,10 @@ dependencies {
     implementation(Library.jgrapht)
 
     /**
-     * Module inclusions
+     * Modules
      */
     implementation(project(":deobfuscator"))
-    implementation(project(":mapper"))
+    implementation(project(":asm"))
 }
 
 tasks.withType<JavaExec> {
