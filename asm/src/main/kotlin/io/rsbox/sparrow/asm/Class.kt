@@ -19,7 +19,7 @@ import org.objectweb.asm.tree.ClassNode
  * @property node ClassNode
  * @constructor
  */
-class Class(val group: ClassGroup, override val node: ClassNode) : Node<ClassNode>, Matchable<Class> {
+class Class(val group: ClassGroup, val node: ClassNode) : Matchable<Class> {
 
     /**
      * The matched type.
@@ -75,6 +75,13 @@ class Class(val group: ClassGroup, override val node: ClassNode) : Node<ClassNod
      * A unique identifier for the class object.
      */
     val id get() = type
+
+    override fun isNameObfuscated(): Boolean {
+        if(name.length <= 2) return true
+        if(name.startsWith("aa") && name.length == 3) return true
+        if(name.startsWith("class")) return true
+        return false
+    }
 
     /**
      * A string representation of this class.

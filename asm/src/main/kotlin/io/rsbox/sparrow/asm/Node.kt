@@ -17,7 +17,9 @@ package io.rsbox.sparrow.asm
 interface Node<T> {
 
     /**
-     * The associated ASM node.
+     * Whether the name of this node is obfuscated.
+     *
+     * @return Boolean
      */
-    val node: T
+    fun isNameObfuscated(): Boolean
 }

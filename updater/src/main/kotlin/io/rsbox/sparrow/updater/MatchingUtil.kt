@@ -1,8 +1,7 @@
 package io.rsbox.sparrow.updater
 
-import io.rsbox.sparrow.asm.Class
-import io.rsbox.sparrow.asm.Field
-import io.rsbox.sparrow.asm.Method
+import io.rsbox.sparrow.asm.*
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -48,5 +47,32 @@ object MatchingUtil {
         if(delta == 0) return 1.0
 
         return (1 - delta / max(countA, countB)).toDouble()
+    }
+
+    inline fun <reified T> compareSets(setA: MutableSet<T>, setB: MutableSet<T>): Double {
+        val oldSize = setB.size
+
+        val cloned = setB.toTypedArray().copyOf(oldSize).toMutableList()
+
+        cloned.removeAll(setA)
+
+        val matched = oldSize - cloned.size
+        val total = setA.size - matched + oldSize
+
+        return if(total == 0) 1.0 else (matched / total).toDouble()
+    }
+
+    private inline fun <reified T : Matchable<*>> compareNodeSets(setA: MutableSet<T>, setB: MutableSet<T>, predicate: (T, T) -> Boolean): Double {
+        if(setA.isEmpty() || setB.isEmpty()) {
+            return if(setA.isEmpty() && setB.isEmpty()) 1.0 else 0.0
+        }
+
+        val clonedA = setA.toTypedArray().copyOf(setA.size).toMutableList()
+        val clonedB = setB.toTypedArray().copyOf(setB.size).toMutableList()
+
+        val total = setA.size + setB.size
+        var unmatched = 0
+
+
     }
 }

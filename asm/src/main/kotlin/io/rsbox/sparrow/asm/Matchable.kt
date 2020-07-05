@@ -14,7 +14,7 @@ package io.rsbox.sparrow.asm
  *
  * @param T
  */
-interface Matchable<T> {
+interface Matchable<T> : Node<T> {
 
     /**
      * The matched type. Null by default.

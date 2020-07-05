@@ -20,7 +20,7 @@ import org.objectweb.asm.tree.MethodNode
  * @property node MethodNode
  * @constructor
  */
-class Method(val group: ClassGroup, val owner: Class, override val node: MethodNode) : Node<MethodNode>, Matchable<Method> {
+class Method(val group: ClassGroup, val owner: Class, val node: MethodNode) : Matchable<Method> {
 
     /**
      * The matched type.
@@ -46,6 +46,18 @@ class Method(val group: ClassGroup, val owner: Class, override val node: MethodN
      * An unique identifier for this method.
      */
     val id get() = Triple(owner.type, name, type)
+
+    /**
+     * Whether the name is obfuscated or not.
+     *
+     * @return Boolean
+     */
+    override fun isNameObfuscated(): Boolean {
+        if(name.length <= 2) return true
+        if(name.startsWith("aa") && name.length == 3) return true
+        if(name.startsWith("method")) return true
+        return false
+    }
 
     /**
      * A string representation of the method.

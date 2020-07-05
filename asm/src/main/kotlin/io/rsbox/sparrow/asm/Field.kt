@@ -20,7 +20,7 @@ import org.objectweb.asm.tree.FieldNode
  * @property node FieldNode
  * @constructor
  */
-class Field(val group: ClassGroup, val owner: Class, override val node: FieldNode) : Node<FieldNode>, Matchable<Field> {
+class Field(val group: ClassGroup, val owner: Class, val node: FieldNode) : Matchable<Field> {
 
     /**
      * The matched type.
@@ -46,6 +46,18 @@ class Field(val group: ClassGroup, val owner: Class, override val node: FieldNod
      * The unique identifier for this field.
      */
     val id get() = owner.type to name
+
+    /**
+     * Whether the name is obfuscated or not.
+     *
+     * @return Boolean
+     */
+    override fun isNameObfuscated(): Boolean {
+        if(name.length <= 2) return true
+        if(name.startsWith("aa") && name.length == 3) return true
+        if(name.startsWith("field")) return true
+        return false
+    }
 
     /**
      * A string representation of the field.
