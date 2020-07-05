@@ -1,7 +1,6 @@
 package io.rsbox.sparrow.updater
 
 import io.rsbox.sparrow.asm.*
-import java.util.*
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -129,5 +128,17 @@ object MatchingUtil {
         assert(unmatched <= total)
 
         return ((total - unmatched) / total).toDouble()
+    }
+
+    fun compareClassSets(setA: Set<Class>, setB: Set<Class>): Double {
+        return compareNodeSets(setA.toMutableSet(), setB.toMutableSet(), MatchingUtil::checkPotentialEquality)
+    }
+
+    fun compareMethodSets(setA: Set<Method>, setB: Set<Method>): Double {
+        return compareNodeSets(setA.toMutableSet(), setB.toMutableSet(), MatchingUtil::checkPotentialEquality)
+    }
+
+    fun compareFieldSets(setA: Set<Field>, setB: Set<Field>): Double {
+        return compareNodeSets(setA.toMutableSet(), setB.toMutableSet(), MatchingUtil::checkPotentialEquality)
     }
 }
