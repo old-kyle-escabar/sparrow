@@ -21,5 +21,22 @@ import java.io.File
  */
 class Updater private constructor(val sourceGroup: ClassGroup, val referenceGroup: ClassGroup) {
 
+    /**
+     * Public constructor for loading JAR files into [ClassGroup]s
+     *
+     * @param sourceJar File
+     * @param referenceJar File
+     * @constructor
+     */
     constructor(sourceJar: File, referenceJar: File) : this(ClassGroup.fromJar(sourceJar), ClassGroup.fromJar(referenceJar))
+
+    /**
+     * Matches all the classes, methods, and fields.
+     *
+     * @param threads Int
+     * @param matchDelta Int
+     */
+    fun matchAll(threads: Int = 4, matchDelta: Int = 0) {
+
+    }
 }
