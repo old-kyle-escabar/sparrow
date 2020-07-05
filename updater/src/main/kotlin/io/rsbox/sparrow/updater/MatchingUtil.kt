@@ -67,12 +67,67 @@ object MatchingUtil {
             return if(setA.isEmpty() && setB.isEmpty()) 1.0 else 0.0
         }
 
-        val clonedA = setA.toTypedArray().copyOf(setA.size).toMutableList()
-        val clonedB = setB.toTypedArray().copyOf(setB.size).toMutableList()
+        val clonedA = setA.toTypedArray().copyOf(setA.size).requireNoNulls().toMutableList()
+        val clonedB = setB.toTypedArray().copyOf(setB.size).requireNoNulls().toMutableList()
 
         val total = setA.size + setB.size
         var unmatched = 0
 
+        /**
+         * Remove nodes which matched types already
+         */
+        val iteratorA = clonedA.iterator()
+        while(iteratorA.hasNext()) {
+            val a = iteratorA.next()
 
+            if(clonedB.remove(a)) {
+                iteratorA.remove()
+            }
+            else if(a.match != null) {
+                if(!clonedB.remove(a.match)) {
+                    unmatched++
+                }
+
+                iteratorA.remove()
+            }
+        }
+
+        val iteratorB = clonedA.iterator()
+        while(iteratorB.hasNext()) {
+            val a = iteratorB.next()
+
+            var found = false
+
+            clonedB.forEach { b ->
+                if(predicate(a, b)) {
+                    found = true
+                    return@forEach
+                }
+            }
+
+            if(!found) {
+                unmatched++
+                iteratorB.remove()
+            }
+        }
+
+        clonedB.forEach loopB@ { b ->
+            var found = false
+
+            clonedA.forEach loopA@ { a ->
+                if(predicate(a, b)) {
+                    found = true
+                    return@loopA
+                }
+            }
+
+            if(!found) {
+                unmatched++
+            }
+        }
+
+        assert(unmatched <= total)
+
+        return ((total - unmatched) / total).toDouble()
     }
 }
